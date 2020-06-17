@@ -3,33 +3,35 @@ package com.nyaupi.presentation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.view.Window
+import android.widget.*
 import com.nyaupi.R
+import com.suke.widget.SwitchButton
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), MainView {
 
     private lateinit var progressBar: ProgressBar
-    private lateinit var text: TextView
-    private lateinit var activateButton: Button
-    private lateinit var deactivateButton: Button
+    private lateinit var lockImage: ImageView
+    private lateinit var unlockImage: ImageView
+    private lateinit var switchButton: SwitchButton
 
     @Inject
     lateinit var presenter: MainPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main)
 
-        text = findViewById(R.id.text)
-        activateButton = findViewById(R.id.activateButton)
-        deactivateButton = findViewById(R.id.deactivateButton)
+        lockImage = findViewById(R.id.lockImage)
+        unlockImage = findViewById(R.id.unlockImage)
         progressBar = findViewById(R.id.progressBar)
-        activateButton.setOnClickListener { presenter.onActivateButtonClick() }
-        deactivateButton.setOnClickListener { presenter.onDeactivateButtonClick() }
+        switchButton = findViewById(R.id.switchButton)
+        switchButton.setOnCheckedChangeListener { view, isChecked ->
+            if (isChecked) presenter.onActivateButtonClick()
+            else presenter.onDeactivateButtonClick()
+        }
 
         NyaupiApplication.injector.inject(this)
         presenter.view = this
@@ -44,19 +46,27 @@ class MainActivity : AppCompatActivity(), MainView {
         progressBar.visibility = View.INVISIBLE
     }
 
-    override fun showActiveMessage() {
-        text.text = "Active"
+    override fun showActive(active: Boolean) {
+        if (active) {
+            unlockImage.visibility = View.INVISIBLE
+            lockImage.visibility = View.VISIBLE
+        }
+        else {
+            unlockImage.visibility = View.VISIBLE
+            lockImage.visibility = View.INVISIBLE
+        }
     }
 
-    override fun showInactiveMessage() {
-        text.text = "Inactive"
+    override fun hideActive() {
+        unlockImage.visibility = View.INVISIBLE
+        lockImage.visibility = View.INVISIBLE
     }
 
-    override fun enableActivateButton(enabled: Boolean) {
-        activateButton.isEnabled = enabled
+    override fun enableSwitch(enabled: Boolean) {
+        switchButton.isEnabled = enabled
     }
 
-    override fun enableDeactivateButton(enabled: Boolean) {
-        deactivateButton.isEnabled = enabled
+    override fun checkSwitch(checked: Boolean) {
+        switchButton.isChecked = checked
     }
 }

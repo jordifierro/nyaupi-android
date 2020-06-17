@@ -5,29 +5,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".presentation.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6">
 
-    <Button
-        android:id="@+id/activateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ON" />
+        <ImageView
+            android:id="@+id/lockImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_lock"
+            android:tint="@color/green" />
 
-    <Button
-        android:id="@+id/deactivateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OFF" />
+        <ImageView
+            android:id="@+id/unlockImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_unlock"
+            android:tint="@color/white" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4">
+
+        <com.suke.widget.SwitchButton
+            android:id="@+id/switchButton"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            app:sb_show_indicator="false"
+            app:sb_checked_color="@color/green" />
+
+    </RelativeLayout>
 
 </LinearLayout>

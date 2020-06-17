@@ -3,9 +3,12 @@ package com.nyaupi.presentation
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.nyaupi.data.Alarm
 import com.nyaupi.data.AlarmApiRepository
+import com.nyaupi.data.Result
 import io.reactivex.Scheduler
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -16,87 +19,54 @@ class MainPresenter @Inject constructor(
 
     lateinit var view: MainView
 
-    var updateDisposable: Disposable? = null
-    var getDisposable: Disposable? = null
+    var disposable: Disposable? = null
 
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun create() {
-        getDisposable = alarmApiRepository.alarmStatus()
+        disposable = alarmApiRepository.alarmStatus()
             .observeOn(mainScheduler)
-            .subscribe {
-                if (it.isSuccess()) {
-                    view.hideLoader()
-                    if (it.data!!.active) {
-                        view.showActiveMessage()
-                        view.enableActivateButton(false)
-                        view.enableDeactivateButton(true)
-                    }
-                    else {
-                        view.showInactiveMessage()
-                        view.enableActivateButton(true)
-                        view.enableDeactivateButton(false)
-                    }
-                } else if (it.isError()) {
-                    view.hideLoader()
-                    view.enableActivateButton(false)
-                    view.enableDeactivateButton(false)
-                } else if (it.isInProgress()) {
-                    view.showLoader()
-                    view.enableActivateButton(false)
-                    view.enableDeactivateButton(false)
-                }
-            }
+            .subscribe(resultConsumer)
     }
 
-
     fun onActivateButtonClick() {
-        updateDisposable = alarmApiRepository.activateAlarm()
+        disposable = alarmApiRepository.activateAlarm()
             .observeOn(mainScheduler)
-            .subscribe {
-                if (it.isSuccess()) {
-                    view.hideLoader()
-                    view.showActiveMessage()
-                    view.enableActivateButton(false)
-                    view.enableDeactivateButton(true)
-                } else if (it.isError()) {
-                    view.hideLoader()
-                    view.showInactiveMessage()
-                    view.enableActivateButton(true)
-                    view.enableDeactivateButton(false)
-                } else if (it.isInProgress()) {
-                    view.enableActivateButton(false)
-                    view.enableDeactivateButton(false)
-                    view.showLoader()
-                }
-            }
+            .subscribe(resultConsumer)
     }
 
     fun onDeactivateButtonClick() {
-        updateDisposable = alarmApiRepository.deactivateAlarm()
+        disposable = alarmApiRepository.deactivateAlarm()
             .observeOn(mainScheduler)
-            .subscribe {
-                if (it.isSuccess()) {
-                    view.enableActivateButton(true)
-                    view.enableDeactivateButton(false)
-                    view.hideLoader()
-                    view.showInactiveMessage()
-                } else if (it.isError()) {
-                    view.enableActivateButton(false)
-                    view.enableDeactivateButton(true)
-                    view.hideLoader()
-                    view.showActiveMessage()
-                } else if (it.isInProgress()) {
-                    view.enableActivateButton(false)
-                    view.enableDeactivateButton(false)
-                    view.showLoader()
-                }
+            .subscribe(resultConsumer)
+    }
+
+    private val resultConsumer = Consumer<Result<Alarm>> {
+        if (it.isSuccess()) {
+            view.hideLoader()
+            if (it.data!!.active) {
+                view.showActive(true)
+                view.enableSwitch(true)
+                view.checkSwitch(true)
             }
+            else {
+                view.showActive(false)
+                view.enableSwitch(true)
+                view.checkSwitch(false)
+            }
+        } else if (it.isError()) {
+            view.hideLoader()
+            view.hideActive()
+            view.enableSwitch(false)
+        } else if (it.isInProgress()) {
+            view.showLoader()
+            view.hideActive()
+            view.enableSwitch(false)
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun destroy() {
-        getDisposable?.dispose()
-        updateDisposable?.dispose()
+        disposable?.dispose()
     }
 }

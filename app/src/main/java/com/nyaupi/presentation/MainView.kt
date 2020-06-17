@@ -4,8 +4,8 @@ interface MainView {
 
     fun showLoader()
     fun hideLoader()
-    fun showActiveMessage()
-    fun showInactiveMessage()
-    fun enableActivateButton(enabled: Boolean)
-    fun enableDeactivateButton(enabled: Boolean)
+    fun showActive(active: Boolean)
+    fun hideActive()
+    fun enableSwitch(enabled: Boolean)
+    fun checkSwitch(checked: Boolean)
 }

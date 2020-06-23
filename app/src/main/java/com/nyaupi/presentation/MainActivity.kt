@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity(), MainView {
     private lateinit var lockImage: ImageView
     private lateinit var unlockImage: ImageView
     private lateinit var switchButton: SwitchButton
+    private lateinit var retry: RelativeLayout
 
     @Inject
     lateinit var presenter: MainPresenter
@@ -31,6 +32,10 @@ class MainActivity : AppCompatActivity(), MainView {
         switchButton.setOnCheckedChangeListener { view, isChecked ->
             if (isChecked) presenter.onActivateButtonClick()
             else presenter.onDeactivateButtonClick()
+        }
+        retry = findViewById(R.id.retry)
+        retry.setOnClickListener {
+            presenter.onRetryClick()
         }
 
         NyaupiApplication.injector.inject(this)
@@ -64,9 +69,19 @@ class MainActivity : AppCompatActivity(), MainView {
 
     override fun enableSwitch(enabled: Boolean) {
         switchButton.isEnabled = enabled
+        if (enabled) switchButton.visibility = View.VISIBLE
+        else switchButton.visibility = View.INVISIBLE
     }
 
     override fun checkSwitch(checked: Boolean) {
         switchButton.isChecked = checked
+    }
+
+    override fun showRetry() {
+        retry.visibility = View.VISIBLE
+    }
+
+    override fun hideRetry() {
+        retry.visibility = View.INVISIBLE
     }
 }

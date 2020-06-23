@@ -8,4 +8,6 @@ interface MainView {
     fun hideActive()
     fun enableSwitch(enabled: Boolean)
     fun checkSwitch(checked: Boolean)
+    fun showRetry()
+    fun hideRetry()
 }

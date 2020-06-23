@@ -41,9 +41,16 @@ class MainPresenter @Inject constructor(
             .subscribe(resultConsumer)
     }
 
+    fun onRetryClick() {
+        disposable = alarmApiRepository.alarmStatus()
+            .observeOn(mainScheduler)
+            .subscribe(resultConsumer)
+    }
+
     private val resultConsumer = Consumer<Result<Alarm>> {
         if (it.isSuccess()) {
             view.hideLoader()
+            view.hideRetry()
             if (it.data!!.active) {
                 view.showActive(true)
                 view.enableSwitch(true)
@@ -58,9 +65,11 @@ class MainPresenter @Inject constructor(
             view.hideLoader()
             view.hideActive()
             view.enableSwitch(false)
+            view.showRetry()
         } else if (it.isInProgress()) {
             view.showLoader()
             view.hideActive()
+            view.hideRetry()
             view.enableSwitch(false)
         }
     }

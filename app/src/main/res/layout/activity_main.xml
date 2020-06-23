@@ -35,6 +35,36 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
 
+        <RelativeLayout
+            android:id="@+id/retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:clickable="true">
+
+            <TextView
+                android:id="@+id/retryText"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:layout_margin="20dp"
+                android:gravity="center"
+                android:text="Cannot connect to alarm. Click to retry!" />
+
+            <ImageView
+                android:id="@+id/retryImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/retryText"
+                android:src="@drawable/ic_refresh"
+                android:tint="@color/white"/>
+
+        </RelativeLayout>
+
+
     </RelativeLayout>
 
     <RelativeLayout
